@@ -3,6 +3,7 @@
 ; lib in the same directory as AutoHotkey.exe and add the ColorBox.ahk script to this folder
 ; Or you can directly give the path to ColorBox.ahk file's path like:
 ; #Include FileOrDirName
+; I Would suggest changing the target_dir due to temp files get deleted often
 
 #Include %A_ScriptDir%\ColorBox.ahk
 
@@ -21,9 +22,9 @@ If (res = 0)
     {
         ColorBox(,"The file doesn't exists creating layout",1,0,1,"OK")
         RunWait, regedit.exe /e %target_dir% HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\Shell\Bags\1\Desktop
-        return
+        ExitApp
     }
-    LoadFromSavedLayout()
+    LoadFromSavedLayout(target_dir)
 }
 else
 {
@@ -36,13 +37,18 @@ else
             RunWait, regedit.exe /e %target_dir% HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\Shell\Bags\1\Desktop
         }
     }
+    else
+    {
+        RunWait, regedit.exe /e %target_dir% HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\Shell\Bags\1\Desktop
+        ExitApp
+    }
 }
 
 ExitApp
 
-LoadFromSavedLayout()
+LoadFromSavedLayout(directory)
 {
-    Run %A_Temp%\desktop_layout.reg,,Min
+    Run %directory%,,Min
     WinWait, "ahk_exe regedit.exe",, 0.15
 
     if WinExist("ahk_exe regedit.exe")
